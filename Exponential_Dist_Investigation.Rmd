@@ -30,11 +30,13 @@ Therefore if we repeat this simulation 1000 times, we should find the mean of al
 ```{r simulations}
 means <- NULL
 vars <- NULL
+nosim <- 1000
+n <- 40
 lambda <- 0.2
 set.seed(1234)
 #Run 1000 simulations of 40 samples, taking the mean of each one
-for (i in 1:1000) {
-    sample <- rexp(40, lambda)
+for (i in 1:nosim) {
+    sample <- rexp(n, lambda)
     means <- c(means, mean(sample))
     vars <- c(vars, var(sample))
 }
@@ -42,12 +44,14 @@ for (i in 1:1000) {
 
 ## Sample mean vs Theoretical mean
 
-From this simulated data, we can calculate the average of all of the sample means, which according to the Central Limit Theorem, should approximate to the theoretical mean of $1/\lambda$ .
+From this simulated data, we can calculate the average of all of the sample means, which according to the Central Limit Theorem, should approximate to the theoretical mean of $1/\lambda$.
 
 ```{r means}
 sampleMean <- mean(means)
 theoreticalMean <- 1/lambda
 acc <- abs(sampleMean - theoreticalMean)*100/theoreticalMean
+varMean <- (1/lambda^2)/nosim
+sampleMeanVar <- var(means) 
 ```
 
 This gives us an overall sample mean of `r format(round(sampleMean, 2), nsmall=2)`, which is very close to the theoretical mean of `r theoreticalMean`, i.e. within `r format(round(acc,2), nsmall=2)`% .  
@@ -60,6 +64,8 @@ qplot(means,geom="histogram", ylab = "Frequency", xlab="Sample means", binwidth=
     labs(title="Histogram of sample means") +
     geom_vline(xintercept = sampleMean, colour="red")
 ```
+
+The variance of the sample mean is ${\sigma}^2/n$, whose estimate is given by ${S}^2/n$. In the simulations above the variance of the sample mean theoretically should be `r varMean`, whereas it was found to be `r sampleMeanVar` 
 
 ## Sample variance vs Theoretical variance
 
