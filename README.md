@@ -1,2 +1,2 @@
 # Statistical_Inference
-Part of the Coursera Datascience course, this is explores statistical inference
+Part of the Coursera Datascience course, this assignment project explores statistical inference

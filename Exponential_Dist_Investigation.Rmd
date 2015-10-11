@@ -1,0 +1,84 @@
+---
+title: "Investigation of the exponential distribution"
+author: "Danny Andersen"
+date: "11 October 2015"
+output: pdf_document
+keep_md: true
+---
+Libraries used:
+
+```{r libraries,warning=FALSE, message=FALSE}
+library(ggplot2)
+```
+
+## Overview
+
+The R stats library contains a number of standard distributions. This paper investigates the characteristics of the exponential distribution, whose probability density function is given by:  
+$$
+f(x) = \lambda {e}^{- \lambda x}  
+$$  
+for $x \geq 0$.  
+
+The intent of this paper is to show for this standard distribution that the sample mean and variance is equivalent to the population mean and variance. It will also show that it obeys the Central Limit Theorem (CLT) that states the mean and variance of a sample mean will be approximately normally distributed.
+
+## Simulations
+
+If we take a random sample of 40 values from an exponential population, the mean and variance of this sample set will be a random approximation of the true mean and variance of an exponential population.  
+
+Therefore if we repeat this simulation 1000 times, we should find the mean of all of the sample means to be very close to the theoretical mean of $1/\lambda$ and the variance very close to the theoretical variance of ${1/\lambda}^{2}$. The R code below shows how the simulations are created. Note that the random seed is set to ensure repeatability of these results.   
+
+```{r simulations}
+means <- NULL
+vars <- NULL
+lambda <- 0.2
+set.seed(1234)
+#Run 1000 simulations of 40 samples, taking the mean of each one
+for (i in 1:1000) {
+    sample <- rexp(40, lambda)
+    means <- c(means, mean(sample))
+    vars <- c(vars, var(sample))
+}
+```
+## Sample mean vs Theoretical mean
+
+From this simulated data, we can calculate the average of all of the sample means, which according to the Central Limit Theorem, should approximate to the theoretical mean of $1/\lambda$ .
+
+```{r means}
+sampleMean <- mean(means)
+theoreticalMean <- 1/lambda
+acc <- abs(sampleMean - theoreticalMean)*100/theoreticalMean
+```
+
+This gives us an overall sample mean of `r format(round(sampleMean, 2), nsmall=2)`, which is very close to the theoretical mean of `r theoreticalMean`, i.e. within `r format(round(acc,2), nsmall=2)`% .  
+
+The plot below shows a histogram of all the simulated 1000 sample means, with a red line showing the centre of the distribution, i.e. the mean.  
+
+```{r meanplots,echo=FALSE}
+#Plot sample means
+qplot(means,geom="histogram", ylab = "Frequency", xlab="Sample means", binwidth=0.1) +
+    labs(title="Histogram of sample means") +
+    geom_vline(xintercept = sampleMean, colour="red")
+```
+## Sample variance vs Theoretical variance
+
+From this simulated data, we can also calculate the variance of all of the sample variances, which according to the Central Limit Theorem, should approximate to the theoretical variance of lambda.
+
+```{r vars}
+sampleVariance <- mean(vars)
+theoreticalVariance <- (1/lambda)^2
+accVar <- abs(sampleVariance - theoreticalVariance)*100/theoreticalVariance
+```
+
+This gives us an average sample variance of `r format(round(sampleVariance,2),nsmall=2)`, which is very close to the theoretical variance of `r theoreticalVariance`, i.e. within `r format(round(accVar,2),nsmall=2)`% . It is interesting to note that this is not as close as the sample mean is to the theoretical mean. 
+
+The plot below shows a histogram of all the simulated 1000 of the sample variances, with a red line showing the centre of the distribution, i.e. the average sample variance.  
+
+```{r varplots,echo=FALSE}
+#Plot sample means
+qplot(vars,geom="histogram", ylab = "Frequency", xlab="Sample variances", binwidth=1) +
+    labs(title="Histogram of sample variance") +
+    geom_vline(xintercept = sampleVariance, colour="blue")
+```
+
+## Distribution and the Central Limit theorem
+
