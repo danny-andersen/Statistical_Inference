@@ -50,8 +50,6 @@ From this simulated data, we can calculate the average of all of the sample mean
 sampleMean <- mean(means)
 theoreticalMean <- 1/lambda
 acc <- abs(sampleMean - theoreticalMean)*100/theoreticalMean
-varMean <- (1/lambda^2)/nosim
-sampleMeanVar <- var(means) 
 ```
 
 This gives us an overall sample mean of `r format(round(sampleMean, 2), nsmall=2)`, which is very close to the theoretical mean of `r theoreticalMean`, i.e. within `r format(round(acc,2), nsmall=2)`% .  
@@ -65,7 +63,13 @@ qplot(means,geom="histogram", ylab = "Frequency", xlab="Sample means", binwidth=
     geom_vline(xintercept = sampleMean, colour="red")
 ```
 
-The variance of the sample mean is ${\sigma}^2/n$, whose estimate is given by ${S}^2/n$. In the simulations above the variance of the sample mean theoretically should be `r varMean`, whereas it was found to be `r sampleMeanVar` 
+```{r meanvariance}
+meanVar <- (1/lambda^2)/n
+sampleMeanVar <- var(means)
+accMeanVar <- abs(sampleMeanVar - meanVar)*100/sampleMeanVar
+```
+
+The variance of the sample mean is ${\sigma}^2/n$, whose estimate is given by ${S}^2/n$. In the simulations above the variance of the sample mean should theoretically be `r format(round(meanVar,2), nsmall=2)`, whereas it was calculated to be `r format(round(sampleMeanVar,2), nsmall=2)`, which is within `r format(round(accMeanVar,2),nsmall=2)`% 
 
 ## Sample variance vs Theoretical variance
 
