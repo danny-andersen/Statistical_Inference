@@ -13,13 +13,13 @@ library(ggplot2)
 
 ## Overview
 
-The R stats library contains a number of standard distributions. This paper investigates the characteristics of the exponential distribution, whose probability density function is given by:  
+The R stats library contains a number of statistical distributions. This paper investigates the characteristics of the exponential distribution, whose probability density function is given by:  
 $$
 f(x) = \lambda {e}^{- \lambda x}  
 $$  
 for $x \geq 0$.  
 
-The intent of this paper is to show for this standard distribution that the sample mean and variance is equivalent to the population mean and variance. It will also show that it obeys the Central Limit Theorem (CLT) that states the mean and variance of a sample mean will be approximately normally distributed.
+The intent of this paper is to show for the exponential distribution that the sample mean and variance is equivalent to the population mean and variance. It will also show that it obeys the Central Limit Theorem (CLT) that states the mean and variance of a sample mean will be approximately normally distributed.
 
 ## Simulations
 
@@ -48,11 +48,11 @@ From this simulated data, we can calculate the average of all of the sample mean
 
 ```{r means}
 sampleMean <- mean(means)
-theoreticalMean <- 1/lambda
-acc <- abs(sampleMean - theoreticalMean)*100/theoreticalMean
+mu <- 1/lambda
+acc <- abs(sampleMean - mu)*100/mu
 ```
 
-This gives us an overall sample mean of `r format(round(sampleMean, 2), nsmall=2)`, which is very close to the theoretical mean of `r theoreticalMean`, i.e. within `r format(round(acc,2), nsmall=2)`% .  
+This gives us an overall sample mean of `r format(round(sampleMean, 2), nsmall=2)`, which is very close to the theoretical mean of `r mu`, i.e. within `r format(round(acc,2), nsmall=2)`% .  
 
 The plot below shows a histogram of all the simulated 1000 sample means, with a red line showing the centre of the distribution, i.e. the mean.  
 
@@ -77,13 +77,13 @@ From this simulated data, we can also calculate the variance of all of the sampl
 
 ```{r vars}
 sampleVariance <- mean(vars)
-theoreticalVariance <- (1/lambda)^2
-accVar <- abs(sampleVariance - theoreticalVariance)*100/theoreticalVariance
+sigma <- (1/lambda)^2
+accVar <- abs(sampleVariance - sigma)*100/sigma
 ```
 
-This gives us an average sample variance of `r format(round(sampleVariance,2),nsmall=2)`, which is very close to the theoretical variance of `r theoreticalVariance`, i.e. within `r format(round(accVar,2),nsmall=2)`% . It is interesting to note that this is not as close as the sample mean is to the theoretical mean. 
+This gives us an average sample variance of `r format(round(sampleVariance,2),nsmall=2)`, which is very close to the theoretical variance of `r sigma`, i.e. within `r format(round(accVar,2),nsmall=2)`% . It is interesting to note that this is not as close as the sample mean is to the theoretical mean. 
 
-The plot below shows a histogram of all the simulated 1000 of the sample variances, with a red line showing the centre of the distribution, i.e. the average sample variance.  
+The plot below shows a histogram of all the simulatedsample variances, with a red line showing the centre of the distribution, i.e. the average sample variance.  
 
 ```{r varplots,echo=FALSE}
 #Plot sample means
@@ -92,5 +92,33 @@ qplot(vars,geom="histogram", ylab = "Frequency", xlab="Sample variances", binwid
     geom_vline(xintercept = sampleVariance, colour="blue")
 ```
 
-## Distribution and the Central Limit theorem
+## Comparison with the standard normal distribution
 
+The central limit theorem states that the distribution of iid variables becomes that of a standard normal as the sample size increases. This can be shown by scaling the sample mean to that of a uniform distscaled_muribution by substracting the population mean and dividing by the  standard deviation of the mean, i.e.
+
+$$
+\frac{X_n - \mu}{\sigma/\sqrt{n}}
+$$
+
+If we do this for all of our generated sample means:
+
+```{r scaled }
+#Scale generated means
+scaler <- function(x) { (x-mu)/(sigma/sqrt(n)) }
+smeans <- vapply(means, FUN=scaler, FUN.VALUE=c(1))
+scaled_mu <- mean(smeans)
+scaled_sigma <- sd(smeans)
+```
+
+we obtain a scaled mean of `r format(round(scaled_mu,3), nsmall=3)` which is very close to the normal distribution mean of 0 and a standard deviation of `r format(round(scaled_sigma,3),nsmall=3)`, which is close to the expected value of 1.
+
+If we plot the new distribution of the scaled means (in black), we find that it closely follows the uniform distribution (shown in black):
+
+```{r uniform_plots}
+g<-ggplot(as.data.frame(smeans), aes(x=smeans)) 
+g<- g + geom_histogram(alpha=0.3, binwidth=0.3, aes(y=..density..)) 
+g<- g + stat_function(fun=dnorm, size=2)
+g + labs(x="Sample mean", y="Density", title="Normalised sample means compared to the normal distribution")
+```
+
+This demonstrates that the distribution of sample means closely resemble that of a normal distribution, as per the Central limit theorem.
