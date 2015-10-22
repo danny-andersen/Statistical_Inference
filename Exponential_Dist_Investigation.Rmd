@@ -102,7 +102,7 @@ scaled_sigma <- sd(smeans)
 
 we obtain a scaled mean of `r format(round(scaled_mu,3), nsmall=3)` which is very close to the normal distribution mean of 0 and a standard deviation of `r format(round(scaled_sigma,3),nsmall=3)`, which is close to the expected value of 1.
 
-If we plot the new distribution of the scaled means we find that it closely follows the uniform distribution (shown as the black line):
+If we plot the histogram of the scaled means and compare it with the uniform distribution (shown as the black line) we find that there is a good match:
 
 ```{r uniform_plots, echo=FALSE}
 g<-ggplot(as.data.frame(smeans), aes(x=smeans)) 
