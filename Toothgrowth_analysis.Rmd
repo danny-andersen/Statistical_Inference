@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Vitamin C and tooth growth in Hamsters"
+title: "Analysis of ascorbic acid and tooth growth in hamsters"
 author: "Danny Andersen"
 date: "23 October 2015"
 output: pdf_document
@@ -14,19 +14,15 @@ library(lattice)
 
 ##Synopsis
 
+A study was undertaken whereby 10 hamsters where given different dosages of ascorbic acid, delivered either through orange juice or a vitamin C supplement. This paper firstly does a brief graphical analysis of the data to determine possible hypotheses. Statistical inference methods are then used to either support or reject them.
 
 ##Data Exploration
-
-The ToothGrowth data is a set of 6 trials on 10 hamsters, with 3 trials using ascorbic acid delivered in 3 different dosages (0.5mg, 1mg, 2mg) via orange juice and three with these same dosages but delivered through a vitamin C supplement.
-
-First, the data is loaded and an hamster id associated with each of the observations.
-
+The ToothGrowth data is a set of 6 trials on 10 hamsters, with 3 trials using ascorbic acid delivered in 3 different dosages (0.5mg, 1mg, 2mg) via orange juice and three with these same dosages but delivered through a vitamin C supplement. First, the data is loaded and an hamster id associated with each of the observations.
 ```{r dataprep}
 data("ToothGrowth")
 ham_id = { id<- NULL;for (i in 1:6) { for (i in 1:10) { id <- c(id,i)}}; id}
 tgi <- cbind(ham_id, ToothGrowth)
 ```
-
 Now we can create a plot for each hamster, showing the toothgrowth for different dosages and different delivery methods.
 
 ```{r lattice_plot, echo=FALSE}
@@ -35,17 +31,17 @@ xyplot(len~dose | factor(ham_id), data=tgi, groups=supp, type="b", pch=c(19,0),
        grid=T, col=c("blue","red"), 
        key=list(text=list(c("Orange Juice", "Vitamin C")),
                 points=list(pch=c(19,0)),col=c("blue","red")),
-       main="Hamster tooth length by Ascorbic Acid dosage and Supplent type for 10 hamsters", xlab="Dosage (mg)", ylab="Tooth length (mm)")
+       main="Hamster tooth length by Ascorbic Acid dosage and \nsupplement type for 10 hamsters", xlab="Dosage (mg)", ylab="Tooth length (mm)")
 ```
 
-As can be seen, for all hamsters there is a strong correlation between ascorbic acid dosage and tooth length, although the effect is less pronounced when incerasing the dosage from 1.0mg to 2.0mg when delivered through orange juice.
+As can be seen, for all hamsters there is a strong correlation between ascorbic acid dosage and tooth length, although the effect is less pronounced when incerasing the dosage from 1.0mg to 2.0mg delivered through orange juice.
 
-This correlation is shown even clearer when all 10 hamsters are shown on the same graph for just vitamin C supplements.  
+This correlation is shown even clearer when all 10 hamsters are shown on the same graph for vitamin C supplements.  
 
 ```{r overlay_plot, echo=FALSE }
 tgif <- dplyr::filter(tgi,supp=="VC") %>% mutate(hamster = factor(ham_id))
 g <- ggplot(tgif, aes(x=dose, y=len, group = hamster))
-g <- g + labs(x="Dosage (mg)", y="Tooth length (mm)", title="Hamster tooth length by Ascorbic Acid dosage by Vitamin C supplement for 10 Hamsters")
+g <- g + labs(x="Dosage (mg)", y="Tooth length (mm)", title="Tooth length by Ascorbic Acid dosage by Vitamin C \nsupplement for 10 Hamsters")
 g + geom_line(size =1, aes(colour=hamster))+ geom_point(pch = 19, fill = "salmon", alpha = .5)
 ```
 
@@ -67,7 +63,12 @@ t2<-t.test(tg_20_oj,tg_10_oj, paired=T)
 
 The lattice graphs show a marked increase in tooth length between a dosage of 0.5mg and 1.0mg when supplied through orange juice, so we will consider the difference of these two trials first.
 
-The 95% confidence interval of the difference in means of the alternate hypothesis is `r t1$conf.int`, with a t-statistic of `r t1$statistic` and a p-value of `r t1$p.value` of the null hypothesis. This shows that there is a high probability that a supplement of orange juice does increase tooth growth in hamsters. If we look at the effect of increasing the dose to 2mg from 1mg using orange juice, the effect is in-conclusive, with the 95% confidence interval including 0: `r t2$conf.int`. 
+```{r disable, echo=FALSE}
+#remove scientific printing to remove issue with $
+options(scipen=999)
+```
+
+The 95% confidence interval of the difference in means of the alternate hypothesis is `r t1$conf.int `, with a t-statistic of `r t1$statistic` and a p-value of `r t1$p.value` of the null hypothesis. This shows that there is a high probability that a supplement of orange juice does increase tooth growth in hamsters. If we look at the effect of increasing the dose to 2mg from 1mg using orange juice, the effect is in-conclusive, with the 95% confidence interval including 0, i.e. `r t2$conf.int`. 
 
 However, there may be factors other than the ascorbic acid in the orange juice that is having this effect on tooth length. So let's turn our attention to the pure vitamin C supplement.
 
@@ -79,15 +80,15 @@ t3<-t.test(tg_10_vc,tg_05_vc, paired=T)
 t4<-t.test(tg_20_vc,tg_10_vc, paired=T)
 ```
 
-The correlation between tooth growth and vitamin C dosage is even greater when the dosage is through a vitamin C supplement. Looking at the difference between 0.5mg and 1.0mg, the 95% confidence interval of the difference in means of the alternate hypothesis is `r t3$conf.int`, with a t-statistic of `r t3$statistic` and a p-value of `r t3$p.value` of the null hypothesis. Increasing the dosage further from 1.0mg to 2.0mg confirms the alternate hypothesis, with a difference in mean confidence interval of `r t4$conf.int`
+The correlation between tooth growth and vitamin C dosage is even greater when the dosage is through a vitamin C supplement. Looking at the difference between 0.5mg and 1.0mg, the 95% confidence interval of the difference in means of the alternate hypothesis is `r t3$conf.int`, with a t-statistic of `r t3$statistic` and a p-value of `r t3$p.value` of the null hypothesis. Increasing the dosage further from 1.0mg to 2.0mg further supports the alternate hypothesis, with a difference in mean confidence interval of `r t4$conf.int`
 
 ##Conclusion
 
 There is strong statistical support of the hypothesis that ascorbic acid increases tooth growth in hamsters.
 
-In addition, the lack of increase from 1.0mg to 2.0mg in tooth growth when delivered using orange juice but a strong increase when a pure vitamin C supplement was suggested that other factors came into play by increasing the dosage of vitamin C, e.g. increased tooth decay.
+In addition, the lack of increase from 1.0mg to 2.0mg in tooth growth when delivered using orange juice but a strong increase when a pure vitamin C supplement was used, suggests that other factors come into play by increasing the dosage of through orange juice, e.g. increased tooth decay.
 
-However, without a control group, i.e. where no vitamin C supplement is given, these findings cannot be conclusive, as simply a more nutrious diet may increase tooth growth, rather then a particular vitamin. 
+However, without a control group or trial, i.e. where no vitamin C supplement is given, these findings cannot be conclusive, as other factors cannot be ruled out, e.g. simply a more nutrious diet may increase tooth growth, rather then a particular vitamin. 
 
 We are also making the assumption that all hamsters have been treated equally, e.g. fed on the same diet and kept in the same conditions. In addition, there may be other unknown factors at play, such as the age and condition of the hamster - the trials would have been conducted at different times and so the hamster would be at different ages; without a control group it is difficult to say that other factors were not at play here.
 
