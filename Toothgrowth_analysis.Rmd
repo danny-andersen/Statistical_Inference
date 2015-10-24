@@ -88,8 +88,19 @@ There is strong statistical support of the hypothesis that ascorbic acid increas
 
 In addition, the lack of increase from 1.0mg to 2.0mg in tooth growth when delivered using orange juice but a strong increase when a pure vitamin C supplement was used, suggests that other factors come into play by increasing the dosage of through orange juice, e.g. increased tooth decay.
 
-However, without a control group or trial, i.e. where no vitamin C supplement is given, these findings cannot be conclusive, as other factors cannot be ruled out, e.g. simply a more nutrious diet may increase tooth growth, rather then a particular vitamin. 
+However, without a control trial, i.e. where no vitamin C supplement is given, these findings cannot be conclusive, as other factors cannot be ruled out, e.g. simply a more nutrious diet may increase tooth growth, rather then a particular vitamin. 
 
-We are also making the assumption that all hamsters have been treated equally, e.g. fed on the same diet and kept in the same conditions. In addition, there may be other unknown factors at play, such as the age and condition of the hamster - the trials would have been conducted at different times and so the hamster would be at different ages; without a control group it is difficult to say that other factors were not at play here.
+Note that this analysis makes a number of assumptions about the data:
+
+1. The same hamsters were used in each of the 6 trials and each of the results were in the same order
+2. Each of the six trials were carried out over the same time period
+3. An appropriate time gap between trials took place to ensure no carry over of effects
+4. All other treatment of the hamsters in each of the trials was constant
+5. Hamsters have consistent tooth growth throughout their lives, as the trials were conducted at different ages of the hamster
+
+
+
+
+
 
 
